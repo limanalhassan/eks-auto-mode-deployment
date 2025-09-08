@@ -4,7 +4,7 @@ on:
   push:
     branches: ["master"]
     paths-ignore:
-      - 'application/**'  # Skip auto-deploy when changes are made in the application directory
+      - 'application/**'
   workflow_dispatch:
 
 env:
@@ -59,10 +59,8 @@ jobs:
         run: |
           git config --global user.name "limanalhassan"
           git config --global user.email "limanalhassan@yahoo.com"
-          git config --global credential.helper "store"
-          echo "https://${{ secrets.GH_TOKEN }}:@github.com" > ~/.git-credentials
           git add application/*
           git commit -m "Update image tag to ${IMAGE_TAG}"
-          git push https://github.com/${{ github.repository }} HEAD:master
+          git push https://$GITHUB_ACTOR:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:master
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the new secret with the personal access token
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
