@@ -3,6 +3,8 @@ name: Build & Push (Docker Hub)
 on:
   push:
     branches: ["master"]
+    paths-ignore:
+      - 'application/**'
   workflow_dispatch:
 
 env:
@@ -43,3 +45,21 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}  # Use only the timestamp tag
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update YAML files with new image tag
+        run: |
+          echo "Updating YAML files with new image tag..."
+          IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}"
+          yq eval ".image = \"${IMAGE_TAG}\"" -i application/dev/dev.yaml
+          yq eval ".image = \"${IMAGE_TAG}\"" -i application/prod/prod.yaml
+          yq eval ".image = \"${IMAGE_TAG}\"" -i application/staging/staging.yaml
+          cat application/dev/dev.yaml  # Print out the dev.yaml file as an example
+
+      - name: Commit and push updated YAML files
+        run: |
+          git config --global user.name "Liman Alhassan"
+          git config --global user.email "liman@linux.com"
+          git add application/*
+          git commit -m "Update image tag to ${IMAGE_TAG}"
+          git push
+
