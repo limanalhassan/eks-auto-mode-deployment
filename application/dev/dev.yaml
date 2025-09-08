@@ -2,6 +2,11 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: dev
+spec:
+  template:
+    spec:
+      containers: []
+image: ${IMAGE_TAG}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -28,6 +33,7 @@ spec:
           resources:
             requests: {cpu: 50m, memory: 64Mi}
             limits: {cpu: 200m, memory: 128Mi}
+image: ${IMAGE_TAG}
 ---
 apiVersion: v1
 kind: Service
@@ -42,6 +48,10 @@ spec:
       port: 80
       targetPort: 8080
   type: ClusterIP
+  template:
+    spec:
+      containers: []
+image: ${IMAGE_TAG}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -70,3 +80,7 @@ spec:
                 name: hello-svc
                 port:
                   number: 80
+  template:
+    spec:
+      containers: []
+image: ${IMAGE_TAG}
