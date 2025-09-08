@@ -41,7 +41,7 @@ variable "cloudflare_zone_id" {
 variable "cname_labels" {
   description = "Cloudflare Zone name"
   type    = list(string)
-  default = ["staging", "prod", "argocd"]
+  default = ["staging", "prod", "argocd", "dev"]
 }
 
 variable "cloudflare_proxied" {
