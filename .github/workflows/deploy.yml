@@ -58,11 +58,15 @@ jobs:
         run: |
           echo "Updating YAML files with new image tag..."
           IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}"
-          yq eval ".image = \"${IMAGE_TAG}\"" -i application/dev/dev.yaml
-          yq eval ".image = \"${IMAGE_TAG}\"" -i application/prod/prod.yaml
-          yq eval ".image = \"${IMAGE_TAG}\"" -i application/staging/staging.yaml
+
+          # Update only the image tag in the 'Deployment' container spec for 'name: app'
+          yq eval '.spec.template.spec.containers[] |= select(.name == "app") | .image = "${IMAGE_TAG}"' -i application/dev/dev.yaml
+          yq eval '.spec.template.spec.containers[] |= select(.name == "app") | .image = "${IMAGE_TAG}"' -i application/prod/prod.yaml
+          yq eval '.spec.template.spec.containers[] |= select(.name == "app") | .image = "${IMAGE_TAG}"' -i application/staging/staging.yaml
+
+          # Print the updated dev.yaml file to verify
           cat application/dev/dev.yaml  # Print out the dev.yaml file as an example
-        
+
       - name: Commit and push updated YAML files
         run: |
           git config --global user.name "github-actions[bot]"
