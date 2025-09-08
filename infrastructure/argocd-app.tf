@@ -21,7 +21,7 @@ locals {
         source:
           repoURL: https://github.com/limanalhassan/eks-auto-mode-deployment.git
           targetRevision: HEAD
-          path: application/{{.env}}.yaml
+          path: application/{{.env}}
         destination:
           server: https://kubernetes.default.svc
           namespace: '{{.env}}'
