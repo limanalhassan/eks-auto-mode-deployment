@@ -24,6 +24,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Install yq
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq  # jq is needed by yq
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
       - name: Compute timestamp tag
         id: ts
         run: echo "tag=$(date -u +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
