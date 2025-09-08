@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: opslevel-appset
+spec:
+  goTemplate: true
+  generators:
+  - list:
+      elements:
+      - env: prod
+      - env: staging
+
+  template:
+    metadata:
+      name: '{{.env}}-opslevel'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/OpsLevel/hello-svc.git
+        targetRevision: HEAD
+        path: application/{{.env}}.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: opslevel-app
