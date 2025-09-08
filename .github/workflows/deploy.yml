@@ -28,26 +28,14 @@ jobs:
         id: ts
         run: echo "tag=$(date -u +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
 
-      - name: Extract metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            # Timestamp tag (highest priority so it shows first)
-            type=raw,value=${{ steps.ts.outputs.tag }},priority=200
-            # Existing tags
-            type=sha,priority=100
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/heads/main') }}
-
+      # Only use the timestamp tag for pushing the image
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            # Push only the timestamp tag
+            ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}
           labels: ${{ steps.meta.outputs.labels }}
-          
