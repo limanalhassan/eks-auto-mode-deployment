@@ -28,14 +28,11 @@ jobs:
         id: ts
         run: echo "tag=$(date -u +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
 
-      # Only use the timestamp tag for pushing the image
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            # Push only the timestamp tag
-            ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}  # Use only the timestamp tag
           labels: ${{ steps.meta.outputs.labels }}
