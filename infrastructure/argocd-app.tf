@@ -12,7 +12,7 @@ locals {
         elements:
         - env: prod
         - env: staging
-        - dev
+        - env: dev
     template:
       metadata:
         name: '{{.env}}-opslevel'
