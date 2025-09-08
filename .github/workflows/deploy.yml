@@ -13,39 +13,47 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # Add permissions for the GITHUB_TOKEN
+    permissions:
+      contents: write
+      pull-requests: write
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          # Use a token that can push back to the repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
-
+        
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+        
       - name: Install yq
         run: |
           sudo apt-get update && sudo apt-get install -y jq  # jq is needed by yq
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
           yq --version
-
+        
       - name: Compute timestamp tag
         id: ts
         run: echo "tag=$(date -u +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
-
+        
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}  # Use only the timestamp tag
-          labels: ${{ steps.meta.outputs.labels }}
-
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}
+          
       - name: Update YAML files with new image tag
         run: |
           echo "Updating YAML files with new image tag..."
@@ -54,13 +62,11 @@ jobs:
           yq eval ".image = \"${IMAGE_TAG}\"" -i application/prod/prod.yaml
           yq eval ".image = \"${IMAGE_TAG}\"" -i application/staging/staging.yaml
           cat application/dev/dev.yaml  # Print out the dev.yaml file as an example
-
+        
       - name: Commit and push updated YAML files
         run: |
-          git config --global user.name "limanalhassan"
-          git config --global user.email "limanalhassan@yahoo.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add application/*
-          git commit -m "Update image tag to ${IMAGE_TAG}"
-          git push https://$GITHUB_ACTOR:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:master
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          git commit -m "Update image tag to ${{ secrets.DOCKERHUB_USERNAME }}/opslevel-test:${{ steps.ts.outputs.tag }}"
+          git push
