@@ -11,7 +11,7 @@ func main() {
 	env := os.Getenv("ENV")
 
 	http.HandleFunc("/hello", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "Hello Derek! I am running in %s\n", env)
+		fmt.Fprintf(w, "Hello Raka! I am running in %s\n", env)
 	})
 
 	log.Println("starting server on port :8080")
