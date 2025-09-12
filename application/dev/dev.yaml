@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: limanalhassan/opslevel-test:2025-09-11-18-40
+          image: limanalhassan/opslevel-test:2025-09-12-22-22
           ports:
             - containerPort: 8080
           env:
