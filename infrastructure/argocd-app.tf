@@ -59,7 +59,7 @@ resource "null_resource" "apply_applicationset" {
   # CREATE / UPDATE
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-lc"]
-    command = <<-EOT
+    command     = <<-EOT
       set -euo pipefail
       KUBECFG="$(mktemp)"
       export KUBECONFIG="$KUBECFG"
@@ -81,7 +81,7 @@ resource "null_resource" "apply_applicationset" {
   provisioner "local-exec" {
     when        = destroy
     interpreter = ["/bin/bash", "-lc"]
-    command = <<-EOT
+    command     = <<-EOT
       set -euo pipefail
       KUBECFG="$(mktemp)"
       export KUBECONFIG="$KUBECFG"

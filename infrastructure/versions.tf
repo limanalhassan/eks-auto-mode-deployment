@@ -1,13 +1,13 @@
 terraform {
   required_version = ">= 1.3.2"
 
-    backend "s3" {
-    bucket         = "liman-terraform-statefile-388374893922"       
+  backend "s3" {
+    bucket         = "liman-terraform-statefile-388374893922"
     key            = "eks/terraform.tfstate"
-    region         = "ca-central-1"                   
-    dynamodb_table = "liman-terraform-locks-388374893922"             
+    region         = "ca-central-1"
+    dynamodb_table = "liman-terraform-locks-388374893922"
     encrypt        = true
-    profile        = "terraform"                   
+    profile        = "terraform"
   }
 
   required_providers {
@@ -16,7 +16,7 @@ terraform {
       version = ">= 5.97.0"
     }
     argocd = {
-      source = "argoproj-labs/argocd"
+      source  = "argoproj-labs/argocd"
       version = "7.11.0"
     }
     cloudflare = {

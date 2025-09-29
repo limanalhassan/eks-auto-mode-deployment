@@ -23,11 +23,11 @@ resource "cloudflare_dns_record" "validate_acm_dns_record" {
     }
   }
 
-  zone_id = var.cloudflare_zone_id
-  name    = each.value.name
-  type    = each.value.type
-  content = each.value.record
-  ttl     = 1
-  proxied = false
+  zone_id    = var.cloudflare_zone_id
+  name       = each.value.name
+  type       = each.value.type
+  content    = each.value.record
+  ttl        = 1
+  proxied    = false
   depends_on = [aws_acm_certificate.liman]
 }

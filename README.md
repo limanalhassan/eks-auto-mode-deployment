@@ -6,17 +6,17 @@ This project demonstrates an automated deployment infrastructure for running app
 
 ```
 eks-auto-mode-deployment/
-├── application/              # Application deployment manifests
-│   ├── dev/                 # Development environment
-│   ├── prod/                # Production environment
-│   └── staging/             # Staging environment
-├── infrastructure/          # Terraform infrastructure code
-│   ├── backend/            # Terraform state management
-│   ├── helm-valuesFiles/   # Helm chart values
-│   └── *.tf                # Terraform configuration files
-├── Dockerfile              # Container image definition
-├── main.go                 # Sample Go application
-└── README.md              # This file
+├── application/          
+│   ├── dev/                 
+│   ├── prod/                
+│   └── staging/             
+├── infrastructure/          
+│   ├── backend/            
+│   ├── helm-valuesFiles/   
+│   └── *.tf                
+├── Dockerfile              
+├── main.go                 
+└── README.md             
 ```
 
 ## Features

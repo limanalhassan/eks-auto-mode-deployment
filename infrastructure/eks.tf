@@ -13,7 +13,7 @@ module "eks" {
   # which will allow it to deploy resources into the cluster
   enable_cluster_creator_admin_permissions = true
   cluster_endpoint_public_access           = true
-  
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 

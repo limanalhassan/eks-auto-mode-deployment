@@ -52,7 +52,7 @@ resource "null_resource" "apply_ingressclass" {
   # CREATE: apply the manifest from stdin
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-lc"]
-    command = <<-EOT
+    command     = <<-EOT
       set -euo pipefail
 
       # Use a temp kubeconfig so we don't pollute global config
@@ -80,7 +80,7 @@ resource "null_resource" "apply_ingressclass" {
   provisioner "local-exec" {
     when        = destroy
     interpreter = ["/bin/bash", "-lc"]
-    command = <<-EOT
+    command     = <<-EOT
       set -euo pipefail
 
       KUBECFG="$(mktemp)"

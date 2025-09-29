@@ -2,6 +2,6 @@
 data "aws_lb" "liman_alb" {
   name = "liman-app-alb"
 
-  depends_on = [helm_release.argocd] 
+  depends_on = [helm_release.argocd]
 }
 
