@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "opslevel-terraform-statefile-388374893922"
+  bucket = "liman-terraform-statefile-388374893922"
 
   lifecycle {
     prevent_destroy = true
@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "terraform_state" {
 }
 
 resource "aws_dynamodb_table" "limanEKS_terraform_locks" {
-  name         = "opslevel-terraform-locks-388374893922"
+  name         = "liman-terraform-locks-388374893922"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 
@@ -22,6 +22,6 @@ resource "aws_dynamodb_table" "limanEKS_terraform_locks" {
   }
 
   tags = {
-    Name = "opslevel DynamoDB Terraform State Lock"
+    Name = "liman DynamoDB Terraform State Lock"
   }
 }

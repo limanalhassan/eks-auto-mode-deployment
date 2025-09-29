@@ -2,10 +2,10 @@ terraform {
   required_version = ">= 1.3.2"
 
     backend "s3" {
-    bucket         = "opslevel-terraform-statefile-388374893922"       
+    bucket         = "liman-terraform-statefile-388374893922"       
     key            = "eks/terraform.tfstate"
     region         = "ca-central-1"                   
-    dynamodb_table = "opslevel-terraform-locks-388374893922"             
+    dynamodb_table = "liman-terraform-locks-388374893922"             
     encrypt        = true
     profile        = "terraform"                   
   }

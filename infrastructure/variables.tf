@@ -1,12 +1,12 @@
 variable "cluster_name" {
   description = "Name of the VPC and EKS Cluster"
-  default     = "opslevel-cluster-canada"
+  default     = "liman-cluster-canada"
   type        = string
 }
 
 variable "name" {
   description = "Name of the VPC and EKS Cluster"
-  default     = "opslevel"
+  default     = "liman"
   type        = string
 }
 

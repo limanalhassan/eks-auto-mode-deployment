@@ -1,6 +1,6 @@
 # Lookup the ALB by name (note: identifier can't contain dashes)
-data "aws_lb" "opslevel_alb" {
-  name = "opslevel-app-alb"
+data "aws_lb" "liman_alb" {
+  name = "liman-app-alb"
 
   depends_on = [helm_release.argocd] 
 }

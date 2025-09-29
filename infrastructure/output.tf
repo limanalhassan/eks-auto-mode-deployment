@@ -146,6 +146,6 @@ output "node_iam_role_arn" {
 # Output the DNS name 
 ################################################################################
 
-output "opslevel_alb_dns_name" {
-  value = data.aws_lb.opslevel_alb.dns_name
+output "liman_alb_dns_name" {
+  value = data.aws_lb.liman_alb.dns_name
 }

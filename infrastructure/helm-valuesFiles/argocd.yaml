@@ -8,7 +8,7 @@ server:
     controller: "aws"
     annotations:
       alb.ingress.kubernetes.io/backend-protocol: HTTPS
-      alb.ingress.kubernetes.io/load-balancer-name: opslevel-app-alb
+      alb.ingress.kubernetes.io/load-balancer-name: liman-app-alb
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80, "HTTPS": 443}]'
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip

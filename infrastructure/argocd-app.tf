@@ -3,7 +3,7 @@ locals {
   apiVersion: argoproj.io/v1alpha1
   kind: ApplicationSet
   metadata:
-    name: opslevel-appset
+    name: liman-appset
     namespace: argocd
   spec:
     goTemplate: true
@@ -15,7 +15,7 @@ locals {
         - env: dev
     template:
       metadata:
-        name: '{{.env}}-opslevel'
+        name: '{{.env}}-liman'
         namespace: argocd
       spec:
         project: default

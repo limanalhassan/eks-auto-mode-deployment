@@ -14,7 +14,7 @@ locals {
   spec:
     scheme: internet-facing
     group:
-      name: opslevel-app
+      name: liman-app
   ---
   apiVersion: networking.k8s.io/v1
   kind: IngressClass

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: opslevel-appset
+  name: liman-appset
 spec:
   goTemplate: true
   generators:
@@ -12,13 +12,13 @@ spec:
 
   template:
     metadata:
-      name: '{{.env}}-opslevel'
+      name: '{{.env}}-liman'
     spec:
       project: default
       source:
-        repoURL: https://github.com/OpsLevel/hello-svc.git
+        repoURL: https://github.com/liman/hello-svc.git
         targetRevision: HEAD
         path: application/{{.env}}.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: opslevel-app
+        namespace: liman-app
