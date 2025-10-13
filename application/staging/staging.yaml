@@ -55,7 +55,7 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/load-balancer-name: liman-app-alb
     alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
-    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-path: /hello
     alb.ingress.kubernetes.io/success-codes: "200-399"
 spec:
   ingressClassName: alb
