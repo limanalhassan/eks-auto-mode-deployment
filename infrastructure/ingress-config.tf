@@ -47,58 +47,27 @@ resource "null_resource" "apply_ingressclass" {
     cluster_name = module.eks.cluster_name
     aws_profile  = var.aws_profile
     force        = var.force_reapply ? uuid() : ""
+    is_windows   = substr(pathexpand("~"), 0, 1) == "/" ? false : true
   }
 
   # CREATE: apply the manifest from stdin
   provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-lc"]
-    command     = <<-EOT
-      set -euo pipefail
-
-      # Use a temp kubeconfig so we don't pollute global config
-      KUBECFG="$(mktemp)"
-      export KUBECONFIG="$KUBECFG"
-
-      # Export profile only if provided (empty string means no-op)
-      if [ -n "${self.triggers.aws_profile}" ]; then
-        export AWS_PROFILE="${self.triggers.aws_profile}"
-      fi
-
-      aws eks update-kubeconfig \
-        --name   "${self.triggers.cluster_name}" \
-        --region "${self.triggers.region}" \
-        --kubeconfig "$KUBECFG"
-
-      # Apply from stdin
-      echo "${self.triggers.manifest_b64}" | base64 -d | kubectl apply -f -
-
-      rm -f "$KUBECFG"
-    EOT
+    interpreter = substr(pathexpand("~"), 0, 1) == "/" ? ["/bin/bash", "-lc"] : ["powershell.exe", "-Command"]
+    command = substr(pathexpand("~"), 0, 1) == "/" ? (
+      "set -euo pipefail; KUBECFG=$(mktemp); export KUBECONFIG=$KUBECFG; if [ -n '${self.triggers.aws_profile}' ]; then export AWS_PROFILE='${self.triggers.aws_profile}'; fi; aws eks update-kubeconfig --name '${self.triggers.cluster_name}' --region '${self.triggers.region}' --kubeconfig $KUBECFG; echo '${self.triggers.manifest_b64}' | base64 -d | kubectl apply -f -; rm -f $KUBECFG"
+      ) : (
+      "$ErrorActionPreference = 'Stop'; $KUBECFG = New-TemporaryFile | Select-Object -ExpandProperty FullName; $env:KUBECONFIG = $KUBECFG; if ('${self.triggers.aws_profile}') { $env:AWS_PROFILE = '${self.triggers.aws_profile}' }; aws eks update-kubeconfig --name '${self.triggers.cluster_name}' --region '${self.triggers.region}' --kubeconfig $KUBECFG; [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${self.triggers.manifest_b64}')) | kubectl apply -f -; Remove-Item -Path $KUBECFG -Force -ErrorAction SilentlyContinue"
+    )
   }
 
   # DESTROY: delete the same manifest from stdin (no external refs)
   provisioner "local-exec" {
     when        = destroy
-    interpreter = ["/bin/bash", "-lc"]
-    command     = <<-EOT
-      set -euo pipefail
-
-      KUBECFG="$(mktemp)"
-      export KUBECONFIG="$KUBECFG"
-
-      if [ -n "${self.triggers.aws_profile}" ]; then
-        export AWS_PROFILE="${self.triggers.aws_profile}"
-      fi
-
-      aws eks update-kubeconfig \
-        --name   "${self.triggers.cluster_name}" \
-        --region "${self.triggers.region}" \
-        --kubeconfig "$KUBECFG"
-
-      # Best-effort delete from stdin
-      echo "${self.triggers.manifest_b64}" | base64 -d | kubectl delete -f - --ignore-not-found || true
-
-      rm -f "$KUBECFG"
-    EOT
+    interpreter = self.triggers.is_windows ? ["powershell.exe", "-Command"] : ["/bin/bash", "-lc"]
+    command = self.triggers.is_windows ? (
+      "$ErrorActionPreference = 'Stop'; $KUBECFG = New-TemporaryFile | Select-Object -ExpandProperty FullName; $env:KUBECONFIG = $KUBECFG; if ('${self.triggers.aws_profile}') { $env:AWS_PROFILE = '${self.triggers.aws_profile}' }; aws eks update-kubeconfig --name '${self.triggers.cluster_name}' --region '${self.triggers.region}' --kubeconfig $KUBECFG; try { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${self.triggers.manifest_b64}')) | kubectl delete -f - --ignore-not-found } catch {}; Remove-Item -Path $KUBECFG -Force -ErrorAction SilentlyContinue"
+      ) : (
+      "set -euo pipefail; KUBECFG=$(mktemp); export KUBECONFIG=$KUBECFG; if [ -n '${self.triggers.aws_profile}' ]; then export AWS_PROFILE='${self.triggers.aws_profile}'; fi; aws eks update-kubeconfig --name '${self.triggers.cluster_name}' --region '${self.triggers.region}' --kubeconfig $KUBECFG; echo '${self.triggers.manifest_b64}' | base64 -d | kubectl delete -f - --ignore-not-found || true; rm -f $KUBECFG"
+    )
   }
 }
